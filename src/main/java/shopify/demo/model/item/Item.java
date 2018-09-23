@@ -7,24 +7,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-@Entity
+@Entity(name = "item_table")
 public class Item {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(unique = true, nullable = false)
+  @Column(unique = true, name = "item_id")
   private Long id;
 
   @NotNull(message = "Item name can not be null.")
   @NotEmpty(message = "Item name can not be empty.")
   private String name;
-
-  @Min(value = 0, message = "Stock can not have negative quantity.")
-  private int quantity;
 
   @DecimalMin(value = "0.1", message = "Item can not be priced lower than $0.1.")
   private double price;
@@ -51,20 +47,20 @@ public class Item {
     this.name = name;
   }
 
-  public int getQuantity() {
-    return quantity;
-  }
-
-  public void setQuantity(Integer quantity) {
-    this.quantity = quantity;
-  }
-
   public double getPrice() {
     return price;
   }
 
   public void setPrice(Double price) {
     this.price = price;
+  }
+
+  public ItemTypeEnum getType() {
+    return type;
+  }
+
+  public void setType(ItemTypeEnum type) {
+    this.type = type;
   }
 
   @Override
