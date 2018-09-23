@@ -49,9 +49,7 @@ public class LineItemService {
 
     Item item = lineItem.getItem();
 
-    if (itemService.exists(item.getId()) &&
-        lineItemRepository.existsByItemEquals(item))
-      itemService.deleteItem(item);
+    if (itemService.exists(item.getId())) itemService.deleteItem(item);
   }
 
   public List<LineItem> saveLineItens(List<LineItem> lineItems) {

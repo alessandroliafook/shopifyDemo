@@ -22,16 +22,9 @@ public class ShopService {
   private OrderService orderService;
 
   @Transactional
-  public Shop create(Shop shop) {
+  public Shop create(String name) {
 
-    List<LineItem> products = shop.getProducts();
-    products = lineItemService.saveLineItens(products);
-    shop.setProducts(products);
-
-    List<Order> orders = shop.getOrders();
-    orders = orderService.createOrders(orders);
-    shop.setOrders(orders);
-
+    Shop shop = new Shop(name);
     return shopRepository.save(shop);
   }
 
@@ -39,15 +32,23 @@ public class ShopService {
   public void delete(String name) {
 
     Shop shop = shopRepository.findById(name).get();
+    List<LineItem> products = shop.getProducts();
+    List<Order> orders = shop.getOrders();
 
     shopRepository.delete(shop);
-    lineItemService.deleteLineItems(shop.getProducts());
-    orderService.deleteOrders(shop.getOrders());
-
+    lineItemService.deleteLineItems(products);
+    orderService.deleteOrders(orders);
   }
 
   @Transactional
-  public Shop editItem(Shop shop) {
+  public Shop editItem(String oldName, String newName) {
+
+    Shop shop = shopRepository.getOne(oldName);
+
+    if(shop.equals(null)) return shop;
+
+    shop.setName(newName);
+
     return shopRepository.save(shop);
   }
 

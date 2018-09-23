@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,10 +21,10 @@ public class ShopController {
   @Autowired
   ShopService shopService;
 
-  @PostMapping
+  @PostMapping("/{name}")
   @ResponseBody
-  public Shop register(@RequestBody Shop shop) {
-    return shopService.create(shop);
+  public Shop register(@PathVariable String name) {
+    return shopService.create(name);
   }
 
   @GetMapping
@@ -43,9 +44,9 @@ public class ShopController {
     return shopService.get(name);
   }
 
-  @PostMapping("/update")
+  @PatchMapping("/{oldName}/{newName}")
   @ResponseBody
-  public Shop update(@RequestBody Shop shop) {
-    return shopService.editItem(shop);
+  public Shop updateName(@PathVariable String oldName, @PathVariable String newName) {
+    return shopService.editItem(oldName, newName);
   }
 }
