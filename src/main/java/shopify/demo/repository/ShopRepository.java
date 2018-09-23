@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import shopify.demo.model.shop.Shop;
 
 @Repository
-public interface ShopRepository extends JpaRepository<Shop, Long> {
+public interface ShopRepository extends JpaRepository<Shop, String> {
 
 
 }

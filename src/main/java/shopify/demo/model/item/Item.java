@@ -15,11 +15,11 @@ public class Item {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(unique = true, name = "item_id")
   private Long id;
 
   @NotNull(message = "Item name can not be null.")
   @NotEmpty(message = "Item name can not be empty.")
+  @Column(unique = true)
   private String name;
 
   @DecimalMin(value = "0.1", message = "Item can not be priced lower than $0.1.")
@@ -78,6 +78,7 @@ public class Item {
 
   @Override
   public int hashCode() {
+
     return Objects.hash(getId(), getName());
   }
 }

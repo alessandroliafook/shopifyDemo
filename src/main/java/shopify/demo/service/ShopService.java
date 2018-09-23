@@ -1,8 +1,11 @@
 package shopify.demo.service;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import shopify.demo.model.item.Item;
+import org.springframework.transaction.annotation.Transactional;
+import shopify.demo.model.item.LineItem;
+import shopify.demo.model.order.Order;
 import shopify.demo.model.shop.Shop;
 import shopify.demo.repository.ShopRepository;
 
@@ -12,16 +15,47 @@ public class ShopService {
   @Autowired
   private ShopRepository shopRepository;
 
-  public Shop createItem(Shop shop) {
+  @Autowired
+  private LineItemService lineItemService;
+
+  @Autowired
+  private OrderService orderService;
+
+  @Transactional
+  public Shop create(Shop shop) {
+
+    List<LineItem> products = shop.getProducts();
+    products = lineItemService.saveLineItens(products);
+    shop.setProducts(products);
+
+    List<Order> orders = shop.getOrders();
+    orders = orderService.createOrders(orders);
+    shop.setOrders(orders);
+
     return shopRepository.save(shop);
   }
 
-  public void deleteItem(Long id) {
-    shopRepository.deleteById(id);
+  @Transactional
+  public void delete(String name) {
+
+    Shop shop = shopRepository.findById(name).get();
+
+    shopRepository.delete(shop);
+    lineItemService.deleteLineItems(shop.getProducts());
+    orderService.deleteOrders(shop.getOrders());
+
   }
 
+  @Transactional
   public Shop editItem(Shop shop) {
     return shopRepository.save(shop);
   }
 
+  public List<Shop> listAll() {
+    return shopRepository.findAll();
+  }
+
+  public Shop get(String shopName) {
+    return shopRepository.findById(shopName).get();
+  }
 }

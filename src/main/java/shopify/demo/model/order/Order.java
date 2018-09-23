@@ -3,7 +3,6 @@ package shopify.demo.model.order;
 
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +20,7 @@ public class Order {
   @Column(unique = true, name = "order_id")
   private Long id;
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany
   List<LineItem> lineItems;
 
   @DecimalMin(value = "0.0", message = "Total of the order can not be negative.")

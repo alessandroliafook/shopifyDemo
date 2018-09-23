@@ -1,17 +1,13 @@
 package shopify.demo.model.item;
 
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import shopify.demo.model.order.Order;
 
 @Entity(name = "line_item_table")
 public class LineItem {
@@ -24,11 +20,11 @@ public class LineItem {
   @Min(value = 0, message = "Stock can not have negative quantity.")
   private int quantity;
 
-  @OneToOne(cascade = CascadeType.ALL)
-  @NotNull(message = "Line item must have a item.")
+  @OneToOne
   private Item item;
 
-  public LineItem() { }
+  public LineItem() {
+  }
 
   public Long getId() {
     return id;

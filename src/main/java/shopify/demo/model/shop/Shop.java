@@ -2,13 +2,12 @@ package shopify.demo.model.shop;
 
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import shopify.demo.model.item.LineItem;
 import shopify.demo.model.order.Order;
 
@@ -16,33 +15,26 @@ import shopify.demo.model.order.Order;
 public class Shop {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "shop_id")
-  private Long id;
+  @NotNull(message = "Shop name can not be null.")
+  @NotEmpty(message = "Shop name can not be empty.")
+  @Column(unique = true)
+  private String name;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  private List<LineItem> lineItems;
+  @OneToMany
+  private List<LineItem> products;
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany
   private List<Order> orders;
 
   public Shop() {
   }
 
-  public Long getId() {
-    return id;
+  public List<LineItem> getProducts() {
+    return products;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public List<LineItem> getLineItems() {
-    return lineItems;
-  }
-
-  public void setLineItems(List<LineItem> lineItems) {
-    this.lineItems = lineItems;
+  public void setProducts(List<LineItem> products) {
+    this.products = products;
   }
 
   public List<Order> getOrders() {
@@ -51,6 +43,14 @@ public class Shop {
 
   public void setOrders(List<Order> orders) {
     this.orders = orders;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   @Override
@@ -62,12 +62,12 @@ public class Shop {
       return false;
     }
     Shop shop = (Shop) o;
-    return Objects.equals(getId(), shop.getId());
+    return Objects.equals(getName(), shop.getName());
   }
 
   @Override
   public int hashCode() {
 
-    return Objects.hash(getId());
+    return Objects.hash(getName());
   }
 }
