@@ -5,9 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-import shopify.demo.model.item.Item;
-import shopify.demo.model.item.ItemTypeEnum;
-import shopify.demo.model.item.LineItem;
+import shopify.demo.model.item.ProductTypeEnum;
+import shopify.demo.model.item.Product;
 import shopify.demo.model.order.Order;
 import shopify.demo.model.shop.Shop;
 
@@ -16,55 +15,49 @@ public class RepositoryLoader implements ApplicationRunner {
 
   private final ShopRepository shopRepository;
   private final OrderRepository orderRepository;
-  private final LineItemRepository lineItemRepository;
-  private final ItemRepository itemRepository;
+  private final ProductRepository productRepository;
 
   @Autowired
   public RepositoryLoader(ShopRepository shopRepository,
       OrderRepository orderRepository,
-      LineItemRepository lineItemRepository, ItemRepository itemRepository) {
+      ProductRepository productRepository) {
     this.shopRepository = shopRepository;
     this.orderRepository = orderRepository;
-    this.lineItemRepository = lineItemRepository;
-    this.itemRepository = itemRepository;
+    this.productRepository = productRepository;
   }
 
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
 
-      Item mouse = new Item();
-      mouse.setName("Mouse");
-      mouse.setPrice(10.50);
-      mouse.setType(ItemTypeEnum.PRODUCT);
+      Product product = new Product();
+      product.setName("Mouse");
+      product.setPrice(10.50);
+      product.setType(ProductTypeEnum.PRODUCT);
+      product.setQuantity(10);
 
-      mouse = itemRepository.save(mouse);
+      product = productRepository.save(product);
 
-      LineItem productsLine = new LineItem();
-      productsLine.setItem(mouse);
-      productsLine.setQuantity(10);
+      Product lineItem = new Product();
+      lineItem.setName("Mouse");
+      lineItem.setPrice(10.50);
+      lineItem.setType(ProductTypeEnum.PRODUCT);
+      lineItem.setQuantity(5);
 
-      productsLine = lineItemRepository.save(productsLine);
-
-      LineItem orderLine = new LineItem();
-      orderLine.setItem(mouse);
-      orderLine.setQuantity(5);
-
-      orderLine = lineItemRepository.save(orderLine);
+      lineItem = productRepository.save(lineItem);
 
       Order order = new Order();
-      order.setLineItems(Arrays.asList(orderLine));
+      order.setLineItens(Arrays.asList(lineItem));
       order.updateTotal();
 
       orderRepository.save(order);
 
       Shop infoShop = new Shop();
       infoShop.setName("Info Shop");
-      infoShop.setProducts(Arrays.asList(productsLine));
+      infoShop.setProducts(Arrays.asList(product));
       infoShop.setOrders(Arrays.asList(order));
 
       shopRepository.save(infoShop);
-
     }
 
 }

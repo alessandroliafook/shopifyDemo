@@ -1,29 +1,35 @@
 package shopify.demo.model.shop;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import shopify.demo.model.item.LineItem;
+import shopify.demo.model.item.Product;
 import shopify.demo.model.order.Order;
 
 @Entity(name = "shop_table")
 public class Shop {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(unique = true, name = "shop_id")
+  private Long id;
+
   @NotNull(message = "Shop name can not be null.")
   @NotEmpty(message = "Shop name can not be empty.")
   @Column(unique = true)
   private String name;
 
   @OneToMany
-  private List<LineItem> products;
+  private List<Product> products;
 
   @OneToMany
   private List<Order> orders;
@@ -37,11 +43,19 @@ public class Shop {
     this.orders = Arrays.asList();
   }
 
-  public List<LineItem> getProducts() {
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public List<Product> getProducts() {
     return products;
   }
 
-  public void setProducts(List<LineItem> products) {
+  public void setProducts(List<Product> products) {
     this.products = products;
   }
 
@@ -70,12 +84,29 @@ public class Shop {
       return false;
     }
     Shop shop = (Shop) o;
-    return Objects.equals(getName(), shop.getName());
+    return Objects.equals(getId(), shop.getId()) &&
+        Objects.equals(getName(), shop.getName());
   }
 
   @Override
   public int hashCode() {
 
-    return Objects.hash(getName());
+    return Objects.hash(getId(), getName());
+  }
+
+  public boolean contains(Product product) {
+
+    boolean contain = false;
+
+    Iterator<Product> storedProducts = getProducts().iterator();
+
+    while (storedProducts.hasNext()) {
+      if (storedProducts.next().getName().equals(product.getName())) {
+        contain = true;
+        break;
+      }
+    }
+
+    return contain;
   }
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import shopify.demo.model.item.LineItem;
+import shopify.demo.model.item.Product;
 import shopify.demo.model.order.Order;
 import shopify.demo.repository.OrderRepository;
 
@@ -15,7 +15,7 @@ public class OrderService {
   private OrderRepository orderRepository;
 
   @Autowired
-  private LineItemService lineItemService;
+  private ProductService productService;
 
   public Order createOrder(Order order) {
 
@@ -24,10 +24,10 @@ public class OrderService {
     else if (orderRepository.existsById(order.getId()))
       return orderRepository.findById(order.getId()).get();
 
-    List<LineItem> lineItems = order.getLineItems();
-    lineItems = lineItemService.saveLineItens(lineItems);
-    order.setLineItems(lineItems);
-    order.updateTotal();
+//    List<Product> lineItems = order.getLineItens();
+//    lineItems = lineItemService.create(lineItems);
+//    order.setLineItens(lineItems);
+//    order.updateTotal();
 
     return orderRepository.save(order);
   }
@@ -62,7 +62,22 @@ public class OrderService {
     for (Order order : orders) {
 
       deleteOrder(order);
-      lineItemService.deleteLineItems(order.getLineItems());
+      productService.delete(order.getLineItens());
+    }
+  }
+
+  public void deleteProduct(List<Order> orders, Product product) {
+
+    for (Order order : orders) {
+
+      List<Product> updatedLineItens = productService.delete(order.getLineItens(), product);
+      order.setLineItens(updatedLineItens);
+
+      double total = order.getTotal();
+      order.updateTotal();
+      double newTotal = order.getTotal();
+
+      if (newTotal != total) orderRepository.save(order);
     }
   }
 }

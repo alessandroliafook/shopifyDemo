@@ -9,26 +9,30 @@ import javax.persistence.Id;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 
-@Entity(name = "item_table")
-public class Item {
+@Entity(name = "product_table")
+public class Product {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(unique = true, name = "product_id")
   private Long id;
 
   @NotNull(message = "Item name can not be null.")
   @NotEmpty(message = "Item name can not be empty.")
-  @Column(unique = true)
   private String name;
 
   @DecimalMin(value = "0.1", message = "Item can not be priced lower than $0.1.")
   private double price;
 
   @NotNull(message = "Item must have a type.")
-  private ItemTypeEnum type;
+  private ProductTypeEnum type;
 
-  public Item() {
+  @PositiveOrZero(message = "Stock can not have negative quantity.")
+  private int quantity;
+
+  public Product() {
   }
 
   public Long getId() {
@@ -51,16 +55,24 @@ public class Item {
     return price;
   }
 
-  public void setPrice(Double price) {
+  public void setPrice(double price) {
     this.price = price;
   }
 
-  public ItemTypeEnum getType() {
+  public ProductTypeEnum getType() {
     return type;
   }
 
-  public void setType(ItemTypeEnum type) {
+  public void setType(ProductTypeEnum type) {
     this.type = type;
+  }
+
+  public int getQuantity() {
+    return quantity;
+  }
+
+  public void setQuantity(int quantity) {
+    this.quantity = quantity;
   }
 
   @Override
@@ -68,17 +80,15 @@ public class Item {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Item)) {
+    if (!(o instanceof Product)) {
       return false;
     }
-    Item item = (Item) o;
-    return Objects.equals(getId(), item.getId()) &&
-        Objects.equals(getName(), item.getName());
+    Product product = (Product) o;
+    return Objects.equals(getId(), product.getId());
   }
 
   @Override
   public int hashCode() {
-
-    return Objects.hash(getId(), getName());
+    return Objects.hash(getId());
   }
 }

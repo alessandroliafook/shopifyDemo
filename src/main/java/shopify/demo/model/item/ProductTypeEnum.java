@@ -1,5 +1,5 @@
 package shopify.demo.model.item;
 
-public enum ItemTypeEnum {
+public enum ProductTypeEnum {
   SERVICE, PRODUCT;
 }

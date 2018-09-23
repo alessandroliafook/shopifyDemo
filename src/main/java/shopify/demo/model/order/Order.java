@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.DecimalMin;
-import shopify.demo.model.item.LineItem;
+import shopify.demo.model.item.Product;
 
 @Entity(name = "order_table")
 public class Order {
@@ -21,7 +21,7 @@ public class Order {
   private Long id;
 
   @OneToMany
-  List<LineItem> lineItems;
+  List<Product> lineItens;
 
   @DecimalMin(value = "0.0", message = "Total of the order can not be negative.")
   private double total;
@@ -36,12 +36,12 @@ public class Order {
     this.id = id;
   }
 
-  public List<LineItem> getLineItems() {
-    return lineItems;
+  public List<Product> getLineItens() {
+    return lineItens;
   }
 
-  public void setLineItems(List<LineItem> lineItems) {
-    this.lineItems = lineItems;
+  public void setLineItens(List<Product> lineItens) {
+    this.lineItens = lineItens;
   }
 
   public double getTotal() {
@@ -54,8 +54,8 @@ public class Order {
 
   public void updateTotal() {
     this.total = 0.0;
-    for (LineItem item : lineItems) {
-      this.total += item.getItem().getPrice();
+    for (Product lineItem : lineItens) {
+      this.total += lineItem.getPrice() * lineItem.getQuantity();
     }
   }
 
@@ -76,4 +76,5 @@ public class Order {
 
     return Objects.hash(getId());
   }
+
 }
