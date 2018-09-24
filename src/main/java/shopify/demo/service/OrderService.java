@@ -1,9 +1,9 @@
 package shopify.demo.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shopify.demo.model.item.Product;
 import shopify.demo.model.order.Order;
 import shopify.demo.repository.OrderRepository;
@@ -17,44 +17,24 @@ public class OrderService {
   @Autowired
   private ProductService productService;
 
-  public Order createOrder(Order order) {
+  public Order create() {
 
-    if (order.equals(null)) return order;
-
-    else if (orderRepository.existsById(order.getId()))
-      return orderRepository.findById(order.getId()).get();
-
-//    List<Product> lineItems = order.getLineItens();
-//    lineItems = lineItemService.create(lineItems);
-//    order.setLineItens(lineItems);
-//    order.updateTotal();
-
+    Order order = new Order();
     return orderRepository.save(order);
   }
 
+  @Transactional
   public void delete(Long id) {
+
+    Order order = orderRepository.findById(id).get();
+
     orderRepository.deleteById(id);
+
+    productService.delete(order.getLineItens());
   }
 
   public void deleteOrder(Order order) {
     orderRepository.delete(order);
-  }
-
-  public Order editOrder(Order order) {
-    return orderRepository.save(order);
-  }
-
-  public List<Order> createOrders(List<Order> orders) {
-
-    List<Order> savedOrders = new ArrayList<>();
-
-    for (Order order : orders) {
-
-      Order newOrder = createOrder(order);
-      if (!newOrder.equals(null)) savedOrders.add(newOrder);
-    }
-
-    return savedOrders;
   }
 
   public void deleteOrders(List<Order> orders) {
@@ -79,5 +59,27 @@ public class OrderService {
 
       if (newTotal != total) orderRepository.save(order);
     }
+  }
+
+  public List<Order> listAll() {
+    return orderRepository.findAll();
+  }
+
+  public Order get(Long order_id) {
+    return orderRepository.findById(order_id).get();
+  }
+
+  public Order update(Order order) {
+    return orderRepository.save(order);
+  }
+
+  public Order deleteLineItem(Long order_id, Product lineItem) {
+
+    Order order = orderRepository.findById(order_id).get();
+
+    productService.delete(lineItem);
+    order.getLineItens().remove(lineItem);
+
+    return orderRepository.save(order);
   }
 }

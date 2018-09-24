@@ -94,19 +94,21 @@ public class Shop {
     return Objects.hash(getId(), getName());
   }
 
-  public boolean contains(Product product) {
+  public Product getProduct(Product product) {
 
-    boolean contain = false;
+    Product storedProduct = null;
 
     Iterator<Product> storedProducts = getProducts().iterator();
 
     while (storedProducts.hasNext()) {
-      if (storedProducts.next().getName().equals(product.getName())) {
-        contain = true;
-        break;
-      }
+
+      storedProduct = storedProducts.next();
+
+      if (storedProduct.getName().equals(product.getName())) break;
+
+      storedProduct = null;
     }
 
-    return contain;
+    return storedProduct;
   }
 }
