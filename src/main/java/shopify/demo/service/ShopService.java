@@ -77,7 +77,7 @@ public class ShopService {
     Shop shop = shopRepository.findByName(shopId);
     Product storedProduct = shop.getProduct(product);
 
-    if (!storedProduct.equals(product)) {
+    if (storedProduct != null) {
       throw new ProductDuplicateException();
     }
 
@@ -219,7 +219,7 @@ public class ShopService {
   }
 
   private void checkStockQuantity(Integer quantity, Product storedProduct) {
-    if (!storedProduct.equals(null)) {
+    if (storedProduct.equals(null)) {
       throw new NotRegistredLineItemException();
     } else if (storedProduct.getQuantity() < quantity ||
         storedProduct.getQuantity() == 0) {

@@ -79,6 +79,7 @@ public class OrderService {
 
     productService.delete(lineItem);
     order.getLineItens().remove(lineItem);
+    order.updateTotal();
 
     return orderRepository.save(order);
   }
